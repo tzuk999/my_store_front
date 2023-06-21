@@ -65,20 +65,22 @@
 <script>
     axios.get("https://tzuks-store.onrender.com/product").then(res => {
         console.log(res.data);
-        res.data.map(product => innerhtml(`<div class="container">    
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">${product.name}</div>
-        <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Price: ${product.price}$</div>
-      </div>
-    </div>
-    
-</div>`))
+        res.data.map(product => {
+          document.getElementById("products-container").innerHTML += `
+            <div class="col-sm-4">
+              <div class="panel panel-primary">
+                <div class="panel-heading">${product.name}</div>
+                <div class="panel-body"><img src=${product.image} class="img-responsive" alt="Image"></div>
+                <div class="panel-footer">Price: ${product.price}$</div>
+              </div>
+            </div>`;
+        });
     })
 </script>
-<div class="container">    
+<div id="products-container" class="container">
+
+</div>
+<div  class="container">    
   <div class="row">
     <div class="col-sm-4">
       <div class="panel panel-primary">
