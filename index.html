@@ -61,27 +61,8 @@
     </div>
   </div>
 </nav>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" ></script>
-<script>
-    axios.get("https://tzuks-store.onrender.com/product").then(res => {
-        console.log(res.data);
-        res.data.map(product => {
 
-          document.getElementById("products-container").innerHTML += `
-            <div id="product${product.id}" class="col-sm-4">
-              <div class="panel panel-primary">
-                <div class="panel-heading"><h4>${product.name}</h4></div>
-                <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
-                <div class="panel-footer" style="display: flex; justify-content: space-between;">
-                    <div>Price: ${product.price}$</div>
-                    <div>Stock: Only ${product.stock} left</div>
-                </div>
-                <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})" class="btn btn-danger" >Delete</button>
-              </div>
-            </div>`;
-        });
-    })
-</script>
+
 <div id="products-container" class="container">
 
 
@@ -97,6 +78,10 @@
     <button type="button" class="btn btn-danger">Sign Up</button>
   </form>
 </footer>
+
+
+
+
 <script>
     function delete_product(productId) {
         console.log(`${productId} has been clicked`);
@@ -104,13 +89,38 @@
         .then(function(response) {
           console.log(response.data);
           // Handle success response
-          location.reload(); // Reload the browser
+          creatHtml() //Form the page again
+          
         })
         .catch(function(error) {
           console.log(error.response.data);
         });
+        
     }
-</script>
+    function creatHtml(){
+        axios.get("https://tzuks-store.onrender.com/product").then(res => {
+            console.log(res.data);
+            var page = ""
+            
+            res.data.map(product => {
 
+                page += `
+                <div id="product${product.id}" class="col-sm-4">
+                    <div class="panel panel-primary">
+                    <div class="panel-heading"><h4>${product.name}</h4></div>
+                    <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
+                    <div class="panel-footer" style="display: flex; justify-content: space-between;">
+                        <div>Price: ${product.price}$</div>
+                        <div>Stock: Only ${product.stock} left</div>
+                    </div>
+                    <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})" class="btn btn-danger" >Delete</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById("products-container").innerHTML = page
+        })
+    }
+    creatHtml()
+</script>
 </body>
 </html>
