@@ -66,12 +66,14 @@
     axios.get("https://tzuks-store.onrender.com/product").then(res => {
         console.log(res.data);
         res.data.map(product => {
+
           document.getElementById("products-container").innerHTML += `
-            <div class="col-sm-4">
+            <div id="product${product.id}" class="col-sm-4">
               <div class="panel panel-primary">
                 <div class="panel-heading">${product.name}</div>
                 <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
                 <div class="panel-footer">Price: ${product.price}$</div>
+                <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})">Delete Product</button>
               </div>
             </div>`;
         });
@@ -79,16 +81,7 @@
 </script>
 <div id="products-container" class="container">
 
-</div>
-<div  class="container">    
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">BLACK FRIDAY DEAL</div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Buy 50 mobiles and get a gift card</div>
-      </div>
-    </div>
+
     
 </div><br>
 
@@ -101,6 +94,20 @@
     <button type="button" class="btn btn-danger">Sign Up</button>
   </form>
 </footer>
+<script>
+    function delete_product(product_id) {
+        console.log(`${product_id} has been clicked`);
+        axios.delete("https://tzuks-store.onrender.com/delete_product/" + product_id )
+        .then(function(response) {
+          console.log(response.data);
+          // Handle success response
+          location.reload(); // Reload the browser
+        })
+        .catch(function(error) {
+          console.log(error.response.data);
+        });
+    }
+</script>
 
 </body>
 </html>
