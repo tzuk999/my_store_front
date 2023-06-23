@@ -89,7 +89,7 @@
         .then(function(response) {
           console.log(response.data);
           // Handle success response
-          creatHtml() //Form the page again
+          createHtml() //Form the page again
           
         })
         .catch(function(error) {
@@ -97,7 +97,7 @@
         });
         
     }
-    function creatHtml(){
+    function createHtml(){
         axios.get("https://tzuks-store.onrender.com/product").then(res => {
             console.log(res.data);
             var page = ""
@@ -120,7 +120,7 @@
             document.getElementById("products-container").innerHTML = page
         })
     }
-    creatHtml()
+    createHtml()
 </script>
 </body>
 </html>
