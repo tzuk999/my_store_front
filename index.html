@@ -98,9 +98,9 @@
   </form>
 </footer>
 <script>
-    function delete_product(product_id) {
-        console.log(`${product_id} has been clicked`);
-        axios.delete("https://tzuks-store.onrender.com/delete_product/" + product_id )
+    function delete_product(productId) {
+        console.log(`${productId} has been clicked`);
+        axios.delete("https://tzuks-store.onrender.com/delete_product/" + productId )
         .then(function(response) {
           console.log(response.data);
           // Handle success response
