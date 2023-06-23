@@ -70,9 +70,12 @@
           document.getElementById("products-container").innerHTML += `
             <div id="product${product.id}" class="col-sm-4">
               <div class="panel panel-primary">
-                <div class="panel-heading">${product.name}</div>
+                <div class="panel-heading"><h4>${product.name}</h4></div>
                 <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
-                <div class="panel-footer">Price: ${product.price}$</div>
+                <div class="panel-footer" style="display: flex; justify-content: space-between;">
+                    <div>Price: ${product.price}$</div>
+                    <div>Stock: Only ${product.stock} left</div>
+                </div>
                 <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})" class="btn btn-danger" >Delete</button>
               </div>
             </div>`;
