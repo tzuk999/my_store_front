@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 50px;
+      border-radius: 0;
+    }
+    
+    /* Remove the jumbotron's default bottom margin */ 
+     .jumbotron {
+      margin-bottom: 0;
+    }
+   
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="#">Logo</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/index.html">Home</a></li>
+              <li class="active"><a href="/Add_Product.html">Add Product</a></li>
+              <li><a href="#">Deals</a></li>
+              <li><a href="#">Stores</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    
+    <div class="container-fluid text-center">
+        <h1>Add Product</h1>
+        <form id="productForm" onsubmit="submitForm(event)">
+        <div>
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" required>
+        </div>
+        <div>
+            <label for="image">Image URL:</label>
+            <input type="text" id="image" name="image" required>
+        </div>
+        <div>
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+            <script>
+                axios.get("https://tzuks-store.onrender.com/category").then(res => {
+                    res.data.map(category => {
+                        document.getElementById("category").innerHTML += `
+                        <option value="${category.id}">${category.name}</option>`
+                    })
+                })
+            </script>
+            </select>
+        </div>
+        <div>
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" required>
+        </div>
+        <div>
+            <input type="submit" value="Add Product">
+        </div>
+        </form>
+        <script>
+            function submitForm(event) {
+                event.preventDefault(); // Prevent form submission
+                var form = document.getElementById('productForm');
+                var formData = new FormData(form);
+                var productData = {};
+
+                for (var [key, value] of formData.entries()) {
+                productData[key] = value;
+                console.log(productData[key] = value);
+                }
+
+                axios
+                .post('https://tzuks-store.onrender.com/add_product', productData)
+                .then(function(response) {
+                    console.log(response.data);
+                    // Handle success response
+                    // Reload the browser after successful submission
+                    location.reload();
+                })
+                .catch(function(error) {
+                    console.log(error.response.data);
+                    // Handle error response
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
