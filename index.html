@@ -8,6 +8,15 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      max-width: 400px; /* Adjust this value to control the form width */
+      padding: 20px;
+      margin-top: 50px;
+    }
     /* Remove the navbar's default rounded borders and increase the bottom margin */ 
     .navbar {
       margin-bottom: 50px;
@@ -31,8 +40,7 @@
 
 <div class="jumbotron">
   <div class="container text-center">
-    <h1>Online Store</h1>      
-    <p>Mission, Vission & Values</p>
+    <h2>Online Store</h2>      
   </div>
 </div>
 
@@ -62,14 +70,7 @@
   </div>
 </nav>
 
-
-<div id="products-container" class="container">
-
-
-    
-</div><br>
-
-
+<div id="products-container" class="container"></div><br>
 
 <footer class="container-fluid text-center">
   <p>Online Store Copyright</p>  
@@ -79,48 +80,122 @@
   </form>
 </footer>
 
-
-
-
 <script>
-    function delete_product(productId) {
-        console.log(`${productId} has been clicked`);
-        axios.delete("https://tzuks-store.onrender.com/delete_product/" + productId )
-        .then(function(response) {
-          console.log(response.data);
-          // Handle success response
-          createHtml() //Form the page again
-          
-        })
-        .catch(function(error) {
-          console.log(error.response.data);
-        });
-        
-    }
-    function createHtml(){
-        axios.get("https://tzuks-store.onrender.com/product").then(res => {
-            console.log(res.data);
-            var page = ""
-            
-            res.data.map(product => {
+  function delete_product(productId) {
+    console.log(`${productId} has been clicked`);
+    axios
+      .delete("https://tzuks-store.onrender.com/delete_product/" + productId)
+      .then(function (response) {
+        console.log(response.data);
+        createHtml(); // Form the page again
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }
 
-                page += `
-                <div id="product${product.id}" class="col-sm-4">
-                    <div class="panel panel-primary">
-                    <div class="panel-heading"><h4>${product.name}</h4></div>
-                    <div class="panel-body"><img src=${product.image} class="img-responsive" style="width:100%" alt="Image"></div>
-                    <div class="panel-footer" style="display: flex; justify-content: space-between;">
-                        <div>Price: ${product.price}$</div>
-                        <div>Stock: Only ${product.stock} left</div>
-                    </div>
-                    <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})" class="btn btn-danger" >Delete</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById("products-container").innerHTML = page
-        })
+  function createHtml() {
+    axios.get("https://tzuks-store.onrender.com/product").then((res) => {
+      console.log(res.data);
+      var page = "";
+
+      res.data.map((product) => {
+        page += `
+          <div id="product${product.id}" class="col-sm-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading"><h4>${product.name}</h4></div>
+              <div class="panel-body">
+                <img src=${product.image} class="img-responsive" style="width:100%" alt="Image">
+              </div>
+              <div class="panel-footer" style="display: flex; justify-content: space-between;">
+                <div>Price: ${product.price}$</div>
+                <div>Stock: Only ${product.stock} left</div>
+              </div>
+              <button id="deletebtn_${product.id}" onclick="delete_product(${product.id})" class="btn btn-danger">Delete</button>
+              <button id="editbtn_${product.id}" onclick="editProduct(${product.id})" class="btn">Edit</button>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById("products-container").innerHTML = page;
+    });
+  }
+
+  function editProduct(productId) {
+    console.log(`editing product ${productId}`);
+    axios
+      .get(`https://tzuks-store.onrender.com/add_product/${productId}`)
+      .then((res) => {
+        console.log(res.data);
+        var page = "";
+        var product = res.data;
+
+        page += `
+          <div class="form-container">
+            <h1 class="text-center">Edit Product</h1>
+            <form id="productEditForm" onsubmit="submitFormEdit(event, ${productId})">
+              <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" required class="form-control" value="${product.name}">
+              </div>
+              <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" required class="form-control" value="${product.price}">
+              </div>
+              <div class="form-group">
+                <label for="image">Image URL:</label>
+                <input type="text" id="image" name="image" required class="form-control" value="${product.image}">
+              </div>
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label for="stock">Stock:</label>
+                <input type="number" id="stock" name="stock" required class="form-control" value="${product.stock}">
+              </div>
+              <div class="form-group text-right">
+                <input type="submit" value="Save Product" class="btn btn-primary">
+              </div>
+            </form>
+          </div>`;
+        document.getElementById("products-container").innerHTML = page;
+        getCategories();
+      });
+  }
+
+  function submitFormEdit(event, productId) {
+    event.preventDefault(); // Prevent form submission
+    var form = document.getElementById("productEditForm");
+    var formData = new FormData(form);
+    var productData = {};
+
+    for (var [key, value] of formData.entries()) {
+      productData[key] = value;
+      console.log((productData[key] = value));
     }
-    createHtml()
+
+    axios
+      .post(`https://tzuks-store.onrender.com/add_product/${productId}`, productData)
+      .then(function (response) {
+        console.log(response.data);
+        createHtml();
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+      });
+  }
+
+  createHtml();
+</script>
+<script>
+  function getCategories() {
+    axios.get("https://tzuks-store.onrender.com/category").then((res) => {
+      res.data.map((category) => {
+        document.getElementById("category").innerHTML += `<option value="${category.id}">${category.name}</option>`;
+      });
+    });
+  }
 </script>
 </body>
 </html>

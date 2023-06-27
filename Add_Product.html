@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            max-width: 400px; /* Adjust this value to control the form width */
+            padding: 20px;
+            margin-top: 50px;
+        }
+        
+    </style>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -27,6 +39,11 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
+    <div class="jumbotron">
+        <div class="container text-center">
+          <h2>Online Store</h2>      
+        </div>
+      </div>
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
           <div class="navbar-header">
@@ -53,42 +70,45 @@
         </div>
       </nav>
     
-    <div class="container-fluid text-center">
-        <h1>Add Product</h1>
-        <form id="productForm" onsubmit="submitForm(event)">
-        <div>
-            <label for="name">Product Name:</label>
-            <input type="text" id="name" name="name" required>
+      <div class="container">
+        <div class="form-container">
+            <h1 class="text-center">Add Product</h1>
+            <form id="productForm" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label for="name">Product Name:</label>
+                    <input type="text" id="name" name="name" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required class="form-control" >
+                </div>
+                <div class="form-group">
+                    <label for="image">Image URL:</label>
+                    <input type="text" id="image" name="image" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required class="form-control">
+                        <script>
+                            axios.get("https://tzuks-store.onrender.com/category").then(res => {
+                                res.data.map(category => {
+                                    document.getElementById("category").innerHTML += `
+                                    <option value="${category.id}">${category.name}</option>`
+                                })
+                            })
+                        </script>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" name="stock" required class="form-control">
+                </div>
+                <div class="form-group text-right">
+                    <input type="submit" value="Add Product" class="btn btn-primary">
+                </div>
+            </form>
         </div>
-        <div>
-            <label for="price">Price:</label>
-            <input type="number" id="price" name="price" step="0.01" required>
-        </div>
-        <div>
-            <label for="image">Image URL:</label>
-            <input type="text" id="image" name="image" required>
-        </div>
-        <div>
-            <label for="category">Category:</label>
-            <select id="category" name="category" required>
-            <script>
-                axios.get("https://tzuks-store.onrender.com/category").then(res => {
-                    res.data.map(category => {
-                        document.getElementById("category").innerHTML += `
-                        <option value="${category.id}">${category.name}</option>`
-                    })
-                })
-            </script>
-            </select>
-        </div>
-        <div>
-            <label for="stock">Stock:</label>
-            <input type="number" id="stock" name="stock" required>
-        </div>
-        <div>
-            <input type="submit" value="Add Product">
-        </div>
-        </form>
+    </div>
         <script>
             function submitForm(event) {
                 event.preventDefault(); // Prevent form submission
