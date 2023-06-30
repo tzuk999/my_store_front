@@ -186,7 +186,7 @@
   function editProduct(productId) {
     console.log(`editing product ${productId}`);
     axios
-      .get(`https://tzuks-store.onrender.com/add_product/${productId}`)
+      .get(`https://tzuks-store.onrender.com/product/${productId}`)
       .then((res) => {
         console.log(res.data);
         var page = "";
@@ -238,7 +238,7 @@
     }
 
     axios
-      .post(`https://tzuks-store.onrender.com/add_product/${productId}`, productData)
+      .put(`https://tzuks-store.onrender.com/add_product/${productId}`, productData)
       .then(function (response) {
         console.log(response.data);
         createHtml();
